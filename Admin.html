@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaskEdu - Admin Panel & Smart Priority Assistant</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="Style.css">
+</head>
+
+<body>
+
+<div class="toast-container" id="toast-area"></div>
+
+<div class="sidebar" style="background: #1e1b4b; border-right: 1px solid rgba(255,255,255,0.05);">
+    <div class="logo-container">
+        <div class="logo-icon" style="background: #f59e0b; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);"><i class="fa-solid fa-user-shield"></i></div>
+        <div class="logo-text">TaskEdu <span style="font-size:11px; color:#f59e0b; block; font-weight:400">Admin</span></div>
+    </div>
+    <ul class="menu">
+        <li class="active" onclick="showPage('admin-priority',this)"><i class="fa-solid fa-brain"></i> Priority Assistant</li>
+        <li onclick="window.location.href='index.html'" style="margin-top: 40px; color: #94a3b8;"><i class="fa-solid fa-graduation-cap"></i> Mode Mahasiswa</li>
+        <li onclick="window.location.href='login.html'" style="color: #f87171;"><i class="fa-solid fa-arrow-right-to-bracket"></i> Keluar</li>
+    </ul>
+</div>
+
+<div class="main-content">
+
+    <div id="admin-priority" class="page active">
+        <div class="page-header">
+            <h1>Smart Priority Assistant Control</h1>
+            <p>Input tugas akademik baru. Sistem AI Assistant akan otomatis mengkalkulasi prioritas berdasarkan 4 kombinasi metrik terbobot.</p>
+        </div>
+
+        <div class="form-inline" style="align-items: flex-end; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
+            <div class="form-group">
+                <label><i class="fa-solid fa-pen-to-square"></i> Nama Tugas</label>
+                <input type="text" id="adm-task-name" placeholder="Misal: Proyek Akhir Web">
+            </div>
+            <div class="form-group">
+                <label><i class="fa-solid fa-book"></i> Matkul & Bobot SKS</label>
+                <select id="adm-task-course">
+                    <option value="Kecerdasan Buatan|4">Kecerdasan Buatan (4 SKS)</option>
+                    <option value="Jaringan Mobile|3">Jaringan Mobile (3 SKS)</option>
+                    <option value="Basis Data|3">Basis Data (3 SKS)</option>
+                    <option value="Metodologi Penelitian|2">Metodologi Penelitian (2 SKS)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label><i class="fa-regular fa-calendar-days"></i> Tenggat Waktu</label>
+                <input type="date" id="adm-task-date">
+            </div>
+            <div class="form-group">
+                <label><i class="fa-regular fa-clock"></i> Estimasi Durasi (Jam)</label>
+                <input type="number" id="adm-task-duration" placeholder="Jam kerja" min="1">
+            </div>
+            <div class="form-group">
+                <label><i class="fa-solid fa-gauge-high"></i> Tingkat Kesulitan</label>
+                <select id="adm-task-difficulty">
+                    <option value="3">Tinggi / Sulit (Hard)</option>
+                    <option value="2">Sedang (Medium)</option>
+                    <option value="1">Rendah / Mudah (Easy)</option>
+                </select>
+            </div>
+            <button class="btn-primary" onclick="processAdminTask()" style="background:#f59e0b; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2); height: 46px;">
+                <i class="fa-solid fa-calculator"></i> Hitung & Rilis
+            </button>
+        </div>
+
+        <div class="page-header" style="margin-top: 40px; margin-bottom: 15px;">
+            <h2 style="font-size: 20px; font-weight: 600;"><i class="fa-solid fa-arrow-down-short-wide" style="color:#f59e0b; margin-right: 8px;"></i>Daftar Prioritas Tugas Terpilih (Sorted by Smart Assistant)</h2>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tugas Kuliah</th>
+                        <th>Mata Kuliah (SKS)</th>
+                        <th>Sisa Waktu / Deadline</th>
+                        <th>Metrik Kerja</th>
+                        <th style="text-align:center">Skor Prioritas AI</th>
+                        <th style="text-align:center">Rekomendasi Tindakan</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-priority-table">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// Mock data awal tugas dengan 4 komponen parameter pendukung
+let adminTasks = [
+    { id: 1, name: 'Model Jaringan Syaraf Tiruan', course: 'Kecerdasan Buatan', sks: 4, date: '2026-07-02', duration: 12, difficulty: 3 },
+    { id: 2, name: 'Konfigurasi Routing OSPF', course: 'Jaringan Mobile', sks: 3, date: '2026-07-10', duration: 4, difficulty: 2 },
+    { id: 3, name: 'Desain ERD Apotek', course: 'Basis Data', sks: 3, date: '2026-07-05', duration: 2, difficulty: 1 }
+];
+
+function triggerToast(message, icon = "fa-circle-check") {
+    const area = document.getElementById('toast-area');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `<i class="fa-solid ${icon}" style="color:#f59e0b"></i> <span>${message}</span>`;
+    area.appendChild(toast);
+    setTimeout(() => toast.classList.add('show'), 100);
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+    }, 3000);
+}
+
+// ALGORITMA UTAMA: SMART PRIORITY ASSISTANT (Weighted Decision Matrix)
+function calculatePriorityScore(dateStr, duration, difficulty, sks) {
+    const today = new Date();
+    const deadline = new Date(dateStr);
+    const timeDiff = deadline.getTime() - today.getTime();
+    const daysRemaining = Math.max(0, Math.ceil(timeDiff / (1000 * 3600 * 24)));
+
+    // 1. Sub-Skor Urgensi Waktu (Maksimal 40 Poin)
+    let urgencyScore = 0;
+    if (daysRemaining <= 1) urgencyScore = 40;
+    else if (daysRemaining <= 3) urgencyScore = 32;
+    else if (daysRemaining <= 7) urgencyScore = 20;
+    else urgencyScore = 10;
+
+    // 2. Sub-Skor Kompleksitas Durasi (Maksimal 20 Poin)
+    // Kerja keras berdurasi lama (>10 jam) diprioritaskan lebih awal
+    let durationScore = Math.min(20, duration * 1.5);
+
+    // 3. Sub-Skor Tingkat Kesulitan (Maksimal 20 Poin)
+    // Hard = 20, Medium = 12, Easy = 5
+    let difficultyScore = difficulty == 3 ? 20 : (difficulty == 2 ? 12 : 5);
+
+    // 4. Sub-Skor Bobot Mata Kuliah (Maksimal 20 Poin)
+    // SKS tinggi memiliki konsekuensi nilai akademik lebih besar
+    let sksScore = Math.min(20, sks * 5);
+
+    // Total Akumulasi Skor Otomatis (Skala Maksimal 100)
+    const totalScore = Math.round(urgencyScore + durationScore + difficultyScore + sksScore);
+
+    // Tentukan Label Klasifikasi Status Rekomendasi Tindakan
+    let label = "Rendah";
+    let badgeClass = "priority-low";
+    if (totalScore >= 70) {
+        label = "KRITIKAL / Kerjakan Sekarang ";
+        badgeClass = "priority-high";
+    } else if (totalScore >= 45) {
+        label = "Siapkan / Cicil Kerja ";
+        badgeClass = "priority-medium";
+    } else {
+        label = "Bisa Ditunda ";
+    }
+
+    return { score: totalScore, label, badgeClass, days: daysRemaining };
+}
+
+// Render Table Terurut berdasarkan Skor Tertinggi
+function renderPriorityEngine() {
+    const tbody = document.getElementById('admin-priority-table');
+    tbody.innerHTML = "";
+
+    // Lakukan pemetaan skor dan pengurutan (Sorting Descending)
+    let calculatedList = adminTasks.map(task => {
+        const analysis = calculatePriorityScore(task.date, task.duration, task.difficulty, task.sks);
+        return { ...task, analysis };
+    }).sort((a, b) => b.analysis.score - a.analysis.score);
+
+    calculatedList.forEach(task => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="font-weight:600">${task.name}</td>
+            <td><span style="color:var(--text-muted)">${task.course}</span> <small style="display:block; font-size:11px; color:#f59e0b">${task.sks} SKS</small></td>
+            <td><strong>${task.analysis.days} Hari Lagi</strong><small style="display:block; font-size:12px; color:var(--text-muted)">${task.date}</small></td>
+            <td>
+                <span style="font-size:12px; display:block; color:var(--text-main)"><i class="fa-regular fa-clock"></i> ${task.duration} Jam Kerja</span>
+                <span style="font-size:11px; color:var(--text-muted)">Kesulitan: ${task.difficulty == 3 ? 'Tinggi' : (task.difficulty == 2 ? 'Sedang' : 'Rendah')}</span>
+            </td>
+            <td style="text-align:center">
+                <div style="font-size:20px; font-weight:700; color:var(--bg-sidebar)">${task.analysis.score}</div>
+            </td>
+            <td style="text-align:center">
+                <span class="priority-badge ${task.analysis.badgeClass}">${task.analysis.label}</span>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// Proses Penambahan Tugas Kuliah & Deadline Baru oleh Admin
+function processAdminTask() {
+    const name = document.getElementById('adm-task-name').value;
+    const courseData = document.getElementById('adm-task-course').value.split('|');
+    const date = document.getElementById('adm-task-date').value;
+    const duration = document.getElementById('adm-task-duration').value;
+    const difficulty = document.getElementById('adm-task-difficulty').value;
+
+    if (!name.trim() || !date || !duration) {
+        triggerToast("Mohon isi seluruh parameter penilaian tugas!", "fa-circle-xmark");
+        return;
+    }
+
+    const newTask = {
+        id: Date.now(),
+        name: name,
+        course: courseData[0],
+        sks: parseInt(courseData[1]),
+        date: date,
+        duration: parseInt(duration),
+        difficulty: parseInt(difficulty)
+    };
+
+    adminTasks.push(newTask);
+    
+    // Reset Form Input
+    document.getElementById('adm-task-name').value = "";
+    document.getElementById('adm-task-date').value = "";
+    document.getElementById('adm-task-duration').value = "";
+
+    renderPriorityEngine();
+    triggerToast("Tugas berhasil dikalkulasi & diprioritaskan!");
+}
+
+// Jalankan Engine saat Load Awal
+renderPriorityEngine();
+</script>
+</body>
+</html>

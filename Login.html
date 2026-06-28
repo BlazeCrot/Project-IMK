@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskEdu - Masuk ke Akun Anda</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="toast-container" id="toast-area"></div>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="brand-header">
+                <div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                <div class="brand-name">TaskEdu</div>
+            </div>
+            
+            <div class="auth-header">
+                <h2>Selamat Datang Kembali!</h2>
+                <p>Silakan masuk untuk mengelola tugas kuliah Anda.</p>
+            </div>
+
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="email"><i class="fa-regular fa-envelope"></i> Alamat Email</label>
+                    <input type="email" id="email" placeholder="nama@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password"><i class="fa-solid fa-lock"></i> Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" placeholder="••••••••" required>
+                        <i class="fa-regular fa-eye toggle-password" onclick="togglePasswordVisibility()"></i>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <label class="remember-me">
+                        <input type="checkbox"> Ingat Saya
+                    </label>
+                    <a href="#" class="forgot-link" onclick="triggerToast('Fitur reset password belum tersedia.', 'fa-circle-info')">Lupa Password?</a>
+                </div>
+
+                <button type="submit" class="btn-submit" id="btn-text">
+                    <span>Masuk Ke Akun</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                Belum punya akun? <a href="#" onclick="triggerToast('Pendaftaran ditutup sementara oleh Admin.', 'fa-circle-xmark')">Daftar Sekarang</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.querySelector('.toggle-password');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        function triggerToast(message, icon = "fa-circle-check") {
+            const area = document.getElementById('toast-area');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+            
+            area.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 100);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const submitBtn = document.getElementById('btn-text');
+
+            submitBtn.innerHTML = `<span>Memproses...</span> <i class="fa-solid fa-spinner fa-spin"></i>`;
+            submitBtn.style.opacity = "0.7";
+            submitBtn.style.pointerEvents = "none";
+
+            setTimeout(() => {
+                triggerToast("Login Berhasil! Mengalihkan ke Dashboard...");
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1200);
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
