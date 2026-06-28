@@ -543,12 +543,118 @@ table tr:hover {
 .toast.show {
     transform: translateX(0);
 }
+/* ==========================================================================
+   RESPONSIVE DESIGN (Optimal di Handphone, Desktop Tetap Aman)
+   ========================================================================== */
+@media (max-width: 768px) {
+    body { 
+        flex-direction: column; 
+    }
+    
+    /* Perbaikan Navigasi Sidebar di HP */
+    .sidebar { 
+        width: 100%; 
+        padding: 15px; 
+        border-right: none !important;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .logo-container { 
+        padding-bottom: 15px; 
+        justify-content: center;
+    }
+    
+    .menu {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+    }
+    
+    .menu li {
+        margin-bottom: 0;
+        padding: 8px 12px;
+        font-size: 12px;
+        gap: 8px;
+    }
+    
+    .menu li i {
+        font-size: 14px;
+        width: auto;
+    }
+    
+    .menu li[style*="margin-top"] {
+        margin-top: 0 !important; /* Menghilangkan margin jauh di mode HP */
+    }
 
-/* RESPONSIVE DESIGN */
-@media(max-width:768px){
-    body{ flex-direction:column; }
-    .sidebar{ width:100%; padding: 20px; }
-    .logo-container { padding-bottom: 20px; }
-    .main-content { padding: 20px; }
-    .login-container { min-height: calc(100vh - 60px); }
+    /* Perbaikan Konten Utama */
+    .main-content { 
+        padding: 20px 15px; 
+        max-height: none; /* Biar scroll bawaan HP lancar */
+        overflow-y: visible;
+    }
+    
+    .page-header h1 {
+        font-size: 22px;
+    }
+    
+    /* Layout Form & Input Box */
+    .form-inline {
+        padding: 15px;
+        gap: 12px;
+        display: flex !important;
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+    
+    .form-group {
+        width: 100%;
+        min-width: 100%;
+    }
+    
+    .btn-primary, .form-inline button {
+        width: 100%;
+        height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Tabel Responsif (Bisa di-swipe kanan-kiri agar tidak merusak layout) */
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    table th, table td {
+        padding: 12px 14px;
+        font-size: 13px;
+        white-space: nowrap; /* Mencegah teks terpotong ke bawah secara berantakan */
+    }
+    
+    /* Grid Konten (Cards & Deadline) */
+    .cards, .deadline-grid, .course-grid {
+        grid-template-columns: 1fr; /* Menjadi 1 kolom penuh di HP */
+        gap: 15px;
+    }
+    
+    .card, .deadline-card, .course-card {
+        padding: 18px;
+    }
+    
+    .card-info p {
+        font-size: 26px;
+    }
+
+    /* Halaman Login di HP */
+    .login-container { 
+        min-height: calc(100vh - 120px);
+        padding: 15px;
+    }
+    
+    .login-card {
+        padding: 25px 20px;
+        border-radius: 16px;
+    }
+}
 }
