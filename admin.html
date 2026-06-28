@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TaskEdu - Admin Panel & Smart Priority Assistant</title>
+<title>TaskEdu - Premium Student Dashboard</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,34 +14,82 @@
 
 <div class="toast-container" id="toast-area"></div>
 
-<div class="sidebar" style="background: #1e1b4b; border-right: 1px solid rgba(255,255,255,0.05);">
+<div class="sidebar">
     <div class="logo-container">
-        <div class="logo-icon" style="background: #f59e0b; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);"><i class="fa-solid fa-user-shield"></i></div>
-        <div class="logo-text">TaskEdu <span style="font-size:11px; color:#f59e0b; block; font-weight:400">Admin</span></div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+            <div class="logo-text">TaskEdu</div>
+        </div>
+        <button class="hamburger-toggle" onclick="toggleMobileMenu()">
+            <i class="fa-solid fa-bars"></i>
+        </button>
     </div>
     <ul class="menu">
-        <li class="active" onclick="showPage('admin-priority',this)"><i class="fa-solid fa-brain"></i> Priority Assistant</li>
-        <li onclick="window.location.href='index.html'" style="margin-top: 40px; color: #94a3b8;"><i class="fa-solid fa-graduation-cap"></i> Mode Mahasiswa</li>
-        <li onclick="window.location.href='login.html'" style="color: #f87171;"><i class="fa-solid fa-arrow-right-to-bracket"></i> Keluar</li>
+        <li class="active" onclick="showPage('dashboard',this)"><i class="fa-solid fa-chart-pie"></i> Dashboard</li>
+        <li onclick="showPage('tugas',this)"><i class="fa-solid fa-brain"></i> Asisten Prioritas</li>
+        <li onclick="showPage('deadline',this)"><i class="fa-solid fa-clock"></i> Deadline</li>
+        <li onclick="showPage('matakuliah',this)"><i class="fa-solid fa-book-bookmark"></i> Mata Kuliah</li>
+        <li onclick="showPage('progress',this)"><i class="fa-solid fa-bars-progress"></i> Progress</li>
+        <li onclick="showPage('pengaturan',this)"><i class="fa-solid fa-sliders"></i> Pengaturan</li>
+        <li onclick="window.location.href='admin.html'" style="margin-top: 20px; color: #f59e0b;"><i class="fa-solid fa-user-shield"></i> Mode Admin</li>
+        <li onclick="window.location.href='login.html'" style="color: #f87171;"><i class="fa-solid fa-arrow-right-to-bracket"></i> Login</li>
     </ul>
 </div>
 
 <div class="main-content">
 
-    <div id="admin-priority" class="page active">
+    <div id="dashboard" class="page active">
         <div class="page-header">
-            <h1>Smart Priority Assistant Control</h1>
-            <p>Input tugas akademik baru. Sistem AI Assistant akan otomatis mengkalkulasi prioritas berdasarkan 4 kombinasi metrik terbobot.</p>
+            <h1>Selamat Datang, <span id="dash-username" style="color:var(--primary)">Irfan</span>! 👋</h1>
+            <p>Berikut rangkuman aktivitas akademik dan tenggat waktu tugas Anda.</p>
         </div>
+        
+        <div class="cards">
+            <div class="card">
+                <div class="card-info">
+                    <h3>Total Tugas</h3>
+                    <p id="count-total">0</p>
+                </div>
+                <div class="card-icon-box" style="background:#e0f2fe; color:#0284c7;"><i class="fa-solid fa-folder-open"></i></div>
+            </div>
+            <div class="card">
+                <div class="card-info">
+                    <h3>Mata Kuliah</h3>
+                    <p>4</p>
+                </div>
+                <div class="card-icon-box" style="background:var(--primary-light); color:var(--primary)"><i class="fa-solid fa-graduation-cap"></i></div>
+            </div>
+            <div class="card">
+                <div class="card-info">
+                    <h3>Selesai</h3>
+                    <p id="count-selesai" style="color:var(--success)">0</p>
+                </div>
+                <div class="card-icon-box" style="background:var(--success-light); color:var(--success)"><i class="fa-solid fa-circle-check"></i></div>
+            </div>
+            <div class="card">
+                <div class="card-info">
+                    <h3>Progress</h3>
+                    <p id="count-progress" style="color:#818cf8">0%</p>
+                </div>
+                <div class="card-icon-box" style="background:#faf5ff; color:#a855f7;"><i class="fa-solid fa-bolt"></i></div>
+            </div>
+        </div>
+    </div>
 
-        <div class="form-inline" style="align-items: flex-end; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
+    <div id="tugas" class="page">
+        <div class="page-header">
+            <h1>Smart Priority Assistant 🧠</h1>
+            <p>Tugas Anda telah diurutkan secara otomatis dari beban terberat dan deadline terdekat.</p>
+        </div>
+        
+        <div class="form-inline" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
             <div class="form-group">
-                <label><i class="fa-solid fa-pen-to-square"></i> Nama Tugas</label>
-                <input type="text" id="adm-task-name" placeholder="Misal: Proyek Akhir Web">
+                <label>Nama Tugas</label>
+                <input type="text" id="task-name" placeholder="Misal: Paper AI">
             </div>
             <div class="form-group">
-                <label><i class="fa-solid fa-book"></i> Matkul & Bobot SKS</label>
-                <select id="adm-task-course">
+                <label>Mata Kuliah</label>
+                <select id="task-course">
                     <option value="Kecerdasan Buatan|4">Kecerdasan Buatan (4 SKS)</option>
                     <option value="Jaringan Mobile|3">Jaringan Mobile (3 SKS)</option>
                     <option value="Basis Data|3">Basis Data (3 SKS)</option>
@@ -49,28 +97,22 @@
                 </select>
             </div>
             <div class="form-group">
-                <label><i class="fa-regular fa-calendar-days"></i> Tenggat Waktu</label>
-                <input type="date" id="adm-task-date">
+                <label>Deadline</label>
+                <input type="date" id="task-date">
             </div>
             <div class="form-group">
-                <label><i class="fa-regular fa-clock"></i> Estimasi Durasi (Jam)</label>
-                <input type="number" id="adm-task-duration" placeholder="Jam kerja" min="1">
+                <label>Estimasi (Jam)</label>
+                <input type="number" id="task-duration" placeholder="Jam" min="1">
             </div>
             <div class="form-group">
-                <label><i class="fa-solid fa-gauge-high"></i> Tingkat Kesulitan</label>
-                <select id="adm-task-difficulty">
-                    <option value="3">Tinggi / Sulit (Hard)</option>
-                    <option value="2">Sedang (Medium)</option>
-                    <option value="1">Rendah / Mudah (Easy)</option>
+                <label>Kesulitan</label>
+                <select id="task-difficulty">
+                    <option value="3">Sulit</option>
+                    <option value="2">Sedang</option>
+                    <option value="1">Mudah</option>
                 </select>
             </div>
-            <button class="btn-primary" onclick="processAdminTask()" style="background:#f59e0b; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2); height: 46px;">
-                <i class="fa-solid fa-calculator"></i> Hitung & Rilis
-            </button>
-        </div>
-
-        <div class="page-header" style="margin-top: 40px; margin-bottom: 15px;">
-            <h2 style="font-size: 20px; font-weight: 600;"><i class="fa-solid fa-arrow-down-short-wide" style="color:#f59e0b; margin-right: 8px;"></i>Daftar Prioritas Tugas Terpilih (Sorted by Smart Assistant)</h2>
+            <button class="btn-primary" onclick="addTask()"><i class="fa-solid fa-plus"></i> Tambah</button>
         </div>
 
         <div class="table-container">
@@ -78,34 +120,129 @@
                 <thead>
                     <tr>
                         <th>Tugas Kuliah</th>
-                        <th>Mata Kuliah (SKS)</th>
-                        <th>Sisa Waktu / Deadline</th>
-                        <th>Metrik Kerja</th>
-                        <th style="text-align:center">Skor Prioritas AI</th>
+                        <th>Mata Kuliah</th>
+                        <th>Sisa Waktu</th>
+                        <th style="text-align:center">Skor AI</th>
                         <th style="text-align:center">Rekomendasi Tindakan</th>
+                        <th>Status</th>
+                        <th style="text-align:center">Aksi</th>
                     </tr>
                 </thead>
-                <tbody id="admin-priority-table">
-                    </tbody>
+                <tbody id="task-table-body">
+                </tbody>
             </table>
+        </div>
+    </div>
+
+    <div id="deadline" class="page">
+        <div class="page-header">
+            <h1>Kalender Tenggat Waktu</h1>
+            <p>Daftar urutan deadline terdekat agar manajemen waktu Anda tetap terjadwal.</p>
+        </div>
+        <div class="deadline-grid" id="deadline-grid-container">
+        </div>
+    </div>
+
+    <div id="matakuliah" class="page">
+        <div class="page-header">
+            <h1>Daftar Mata Kuliah</h1>
+            <p>Semester berjalan saat ini.</p>
+        </div>
+        <div class="course-grid">
+            <div class="course-card">
+                <div>
+                    <h3 style="font-size:18px; font-weight:600">Kecerdasan Buatan</h3>
+                    <p style="color: var(--text-muted); font-size:13px; margin-top:5px;">Bobot Kuliah: 4 SKS</p>
+                </div>
+                <i class="fa-solid fa-brain" style="font-size:24px; color:var(--primary)"></i>
+            </div>
+            <div class="course-card">
+                <div>
+                    <h3 style="font-size:18px; font-weight:600">Jaringan Mobile</h3>
+                    <p style="color: var(--text-muted); font-size:13px; margin-top:5px;">Bobot Kuliah: 3 SKS</p>
+                </div>
+                <i class="fa-solid fa-network-wired" style="font-size:24px; color:#ec4899"></i>
+            </div>
+            <div class="course-card">
+                <div>
+                    <h3 style="font-size:18px; font-weight:600">Basis Data</h3>
+                    <p style="color: var(--text-muted); font-size:13px; margin-top:5px;">Bobot Kuliah: 3 SKS</p>
+                </div>
+                <i class="fa-solid fa-database" style="font-size:24px; color:#f59e0b"></i>
+            </div>
+        </div>
+    </div>
+
+    <div id="progress" class="page">
+        <div class="page-header">
+            <h1>Analitik Progres Akademik</h1>
+            <p>Metrik performa penyelesaian kewajiban akademik.</p>
+        </div>
+        <div class="progress-box">
+            <h3 style="font-weight:600; font-size:16px">Rasio Penyelesaian Tugas Global</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="main-progress-fill"></div>
+            </div>
+            <p id="main-progress-text" style="font-weight:500; font-size:14px; color:var(--text-main);">
+                0% Tugas Selesai
+            </p>
+        </div>
+    </div>
+
+    <div id="pengaturan" class="page">
+        <div class="page-header">
+            <h1>Pengaturan Akun</h1>
+            <p>Konfigurasi data profil pengguna aplikasi.</p>
+        </div>
+        <div class="form-box" style="background:white; padding:30px; border-radius:20px; box-shadow:0 10px 25px rgba(0,0,0,0.02)">
+            <div class="form-group" style="margin-bottom:20px">
+                <label>Nama Lengkap</label>
+                <input type="text" id="input-nama" value="Irfan" style="background:none">
+            </div>
+            <div class="form-group" style="margin-bottom:20px">
+                <label>Alamat Email</label>
+                <input type="email" value="irfan@email.com" style="background:none">
+            </div>
+            <button class="btn-primary" onclick="saveSettings()"><i class="fa-solid fa-check"></i> Perbarui Profil</button>
         </div>
     </div>
 
 </div>
 
 <script>
-// Mock data awal tugas dengan 4 komponen parameter pendukung
-let adminTasks = [
-    { id: 1, name: 'Model Jaringan Syaraf Tiruan', course: 'Kecerdasan Buatan', sks: 4, date: '2026-07-02', duration: 12, difficulty: 3 },
-    { id: 2, name: 'Konfigurasi Routing OSPF', course: 'Jaringan Mobile', sks: 3, date: '2026-07-10', duration: 4, difficulty: 2 },
-    { id: 3, name: 'Desain ERD Apotek', course: 'Basis Data', sks: 3, date: '2026-07-05', duration: 2, difficulty: 1 }
+// Data awal mahasiswa
+let tasks = [
+    { id: 1, name: 'Model Jaringan Syaraf Tiruan', course: 'Kecerdasan Buatan', sks: 4, date: '2026-07-02', duration: 12, difficulty: 3, status: 'pending' },
+    { id: 2, name: 'Konfigurasi Routing OSPF', course: 'Jaringan Mobile', sks: 3, date: '2026-07-10', duration: 4, difficulty: 2, status: 'pending' },
+    { id: 3, name: 'Desain ERD Apotek', course: 'Basis Data', sks: 3, date: '2026-07-05', duration: 2, difficulty: 1, status: 'done' }
 ];
+
+function showPage(pageId, element){
+    document.querySelectorAll('.page').forEach(page=> page.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    document.querySelectorAll('.menu li').forEach(menu=> menu.classList.remove('active'));
+    element.classList.add('active');
+
+    // Menutup menu drop-down di HP secara otomatis setelah halaman dipilih
+    const mobileMenu = document.querySelector('.menu');
+    if (mobileMenu) {
+        mobileMenu.classList.remove('show-menu');
+    }
+}
+
+// Fungsi Baru: Membuka dan menutup navigasi menu garis 3 di HP
+function toggleMobileMenu() {
+    const menu = document.querySelector('.menu');
+    if (menu) {
+        menu.classList.toggle('show-menu');
+    }
+}
 
 function triggerToast(message, icon = "fa-circle-check") {
     const area = document.getElementById('toast-area');
     const toast = document.createElement('div');
     toast.className = 'toast';
-    toast.innerHTML = `<i class="fa-solid ${icon}" style="color:#f59e0b"></i> <span>${message}</span>`;
+    toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
     area.appendChild(toast);
     setTimeout(() => toast.classList.add('show'), 100);
     setTimeout(() => {
@@ -114,119 +251,149 @@ function triggerToast(message, icon = "fa-circle-check") {
     }, 3000);
 }
 
-// ALGORITMA UTAMA: SMART PRIORITY ASSISTANT (Weighted Decision Matrix)
-function calculatePriorityScore(dateStr, duration, difficulty, sks) {
+// ALGORITMA SMART PRIORITY ENGINE (Sinkron dengan Admin)
+function calculatePriority(dateStr, duration, difficulty, sks) {
     const today = new Date();
     const deadline = new Date(dateStr);
     const timeDiff = deadline.getTime() - today.getTime();
     const daysRemaining = Math.max(0, Math.ceil(timeDiff / (1000 * 3600 * 24)));
 
-    // 1. Sub-Skor Urgensi Waktu (Maksimal 40 Poin)
-    let urgencyScore = 0;
-    if (daysRemaining <= 1) urgencyScore = 40;
-    else if (daysRemaining <= 3) urgencyScore = 32;
-    else if (daysRemaining <= 7) urgencyScore = 20;
-    else urgencyScore = 10;
-
-    // 2. Sub-Skor Kompleksitas Durasi (Maksimal 20 Poin)
-    // Kerja keras berdurasi lama (>10 jam) diprioritaskan lebih awal
+    let urgency = daysRemaining <= 1 ? 40 : (daysRemaining <= 3 ? 32 : (daysRemaining <= 7 ? 20 : 10));
     let durationScore = Math.min(20, duration * 1.5);
-
-    // 3. Sub-Skor Tingkat Kesulitan (Maksimal 20 Poin)
-    // Hard = 20, Medium = 12, Easy = 5
     let difficultyScore = difficulty == 3 ? 20 : (difficulty == 2 ? 12 : 5);
-
-    // 4. Sub-Skor Bobot Mata Kuliah (Maksimal 20 Poin)
-    // SKS tinggi memiliki konsekuensi nilai akademik lebih besar
     let sksScore = Math.min(20, sks * 5);
 
-    // Total Akumulasi Skor Otomatis (Skala Maksimal 100)
-    const totalScore = Math.round(urgencyScore + durationScore + difficultyScore + sksScore);
+    const score = Math.round(urgency + durationScore + difficultyScore + sksScore);
 
-    // Tentukan Label Klasifikasi Status Rekomendasi Tindakan
-    let label = "Rendah";
-    let badgeClass = "priority-low";
-    if (totalScore >= 70) {
-        label = "KRITIKAL / Kerjakan Sekarang ";
-        badgeClass = "priority-high";
-    } else if (totalScore >= 45) {
-        label = "Siapkan / Cicil Kerja ";
-        badgeClass = "priority-medium";
-    } else {
-        label = "Bisa Ditunda ";
-    }
+    let label = "Bisa Ditunda 💤";
+    let badge = "priority-low";
+    if (score >= 70) { label = "KRITIKAL 🚨"; badge = "priority-high"; }
+    else if (score >= 45) { label = "Cicil Kerja ⏳"; badge = "priority-medium"; }
 
-    return { score: totalScore, label, badgeClass, days: daysRemaining };
+    return { score, label, badge, days: daysRemaining };
 }
 
-// Render Table Terurut berdasarkan Skor Tertinggi
-function renderPriorityEngine() {
-    const tbody = document.getElementById('admin-priority-table');
+function appEngineRender() {
+    const tbody = document.getElementById('task-table-body');
+    const deadlineGrid = document.getElementById('deadline-grid-container');
+    
     tbody.innerHTML = "";
+    deadlineGrid.innerHTML = "";
+    let completedCount = 0;
 
-    // Lakukan pemetaan skor dan pengurutan (Sorting Descending)
-    let calculatedList = adminTasks.map(task => {
-        const analysis = calculatePriorityScore(task.date, task.duration, task.difficulty, task.sks);
-        return { ...task, analysis };
-    }).sort((a, b) => b.analysis.score - a.analysis.score);
+    let sortedTasks = tasks.map(t => {
+        return { ...t, analysis: calculatePriority(t.date, t.duration, t.difficulty, t.sks) };
+    }).sort((a, b) => {
+        if (a.status === b.status) return b.analysis.score - a.analysis.score;
+        return a.status === 'done' ? 1 : -1;
+    });
 
-    calculatedList.forEach(task => {
+    sortedTasks.forEach(task => {
+        if(task.status === 'done') completedCount++;
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td style="font-weight:600">${task.name}</td>
-            <td><span style="color:var(--text-muted)">${task.course}</span> <small style="display:block; font-size:11px; color:#f59e0b">${task.sks} SKS</small></td>
-            <td><strong>${task.analysis.days} Hari Lagi</strong><small style="display:block; font-size:12px; color:var(--text-muted)">${task.date}</small></td>
+            <td><span style="color:var(--text-muted)">${task.course}</span> <small style="display:block;font-size:11px;color:var(--primary)">${task.sks} SKS</small></td>
+            <td><strong>${task.analysis.days} Hari Lagi</strong><small style="display:block;font-size:11px;color:var(--text-muted)">${task.date}</small></td>
+            <td style="text-align:center; font-weight:700; font-size:16px">${task.status === 'done' ? '-' : task.analysis.score}</td>
+            <td style="text-align:center">
+                ${task.status === 'done' ? '<span class="priority-badge" style="background:#e2e8f0;color:#64748b">Selesai</span>' : `<span class="priority-badge ${task.analysis.badge}">${task.analysis.label}</span>`}
+            </td>
             <td>
-                <span style="font-size:12px; display:block; color:var(--text-main)"><i class="fa-regular fa-clock"></i> ${task.duration} Jam Kerja</span>
-                <span style="font-size:11px; color:var(--text-muted)">Kesulitan: ${task.difficulty == 3 ? 'Tinggi' : (task.difficulty == 2 ? 'Sedang' : 'Rendah')}</span>
+                <span class="status-badge ${task.status}" onclick="toggleTaskStatus(${task.id})">
+                    <i class="fa-solid ${task.status === 'done' ? 'fa-check-circle' : 'fa-circle-dot'}"></i>
+                    ${task.status === 'done' ? 'Selesai' : 'Belum'}
+                </span>
             </td>
             <td style="text-align:center">
-                <div style="font-size:20px; font-weight:700; color:var(--bg-sidebar)">${task.analysis.score}</div>
-            </td>
-            <td style="text-align:center">
-                <span class="priority-badge ${task.analysis.badgeClass}">${task.analysis.label}</span>
+                <button class="btn-delete" onclick="deleteTask(${task.id})"><i class="fa-regular fa-trash-can"></i></button>
             </td>
         `;
         tbody.appendChild(tr);
+
+        if(task.status === 'pending') {
+            const dCard = document.createElement('div');
+            dCard.className = 'deadline-card';
+            dCard.style.borderLeft = task.analysis.score >= 70 ? "6px solid var(--danger)" : "6px solid #f59e0b";
+            dCard.innerHTML = `
+                <h3 style="font-weight:600; font-size:16px">${task.name}</h3>
+                <p style="color:var(--text-muted); font-size:13px">${task.course}</p>
+                <p style="color:var(--danger); font-weight:600; font-size:14px; margin-top:15px">
+                    <i class="fa-solid fa-hourglass-half"></i> ${task.analysis.days} Hari Lagi (${task.analysis.label})
+                </p>
+            `;
+            deadlineGrid.appendChild(dCard);
+        }
     });
+
+    if(deadlineGrid.innerHTML === "") {
+        deadlineGrid.innerHTML = `<p style="color:var(--text-muted);">🎉 Semua deadline aman atau telah diselesaikan!</p>`;
+    }
+
+    const totalCount = tasks.length;
+    const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+
+    document.getElementById('count-total').innerText = totalCount;
+    document.getElementById('count-selesai').innerText = completedCount;
+    document.getElementById('count-progress').innerText = progressPercent + "%";
+    document.getElementById('main-progress-fill').style.width = progressPercent + "%";
+    document.getElementById('main-progress-text').innerText = `${progressPercent}% Tugas Kuliah Telah Diselesaikan`;
 }
 
-// Proses Penambahan Tugas Kuliah & Deadline Baru oleh Admin
-function processAdminTask() {
-    const name = document.getElementById('adm-task-name').value;
-    const courseData = document.getElementById('adm-task-course').value.split('|');
-    const date = document.getElementById('adm-task-date').value;
-    const duration = document.getElementById('adm-task-duration').value;
-    const difficulty = document.getElementById('adm-task-difficulty').value;
+function addTask() {
+    const nameInput = document.getElementById('task-name');
+    const courseData = document.getElementById('task-course').value.split('|');
+    const dateInput = document.getElementById('task-date');
+    const durationInput = document.getElementById('task-duration');
+    const difficultyInput = document.getElementById('task-difficulty');
 
-    if (!name.trim() || !date || !duration) {
-        triggerToast("Mohon isi seluruh parameter penilaian tugas!", "fa-circle-xmark");
+    if(!nameInput.value.trim() || !dateInput.value || !durationInput.value) {
+        triggerToast("Gagal! Mohon lengkapi seluruh kolom.", "fa-circle-xmark");
         return;
     }
 
-    const newTask = {
+    tasks.push({
         id: Date.now(),
-        name: name,
+        name: nameInput.value,
         course: courseData[0],
         sks: parseInt(courseData[1]),
-        date: date,
-        duration: parseInt(duration),
-        difficulty: parseInt(difficulty)
-    };
+        date: dateInput.value,
+        duration: parseInt(durationInput.value),
+        difficulty: parseInt(difficultyInput.value),
+        status: 'pending'
+    });
 
-    adminTasks.push(newTask);
-    
-    // Reset Form Input
-    document.getElementById('adm-task-name').value = "";
-    document.getElementById('adm-task-date').value = "";
-    document.getElementById('adm-task-duration').value = "";
-
-    renderPriorityEngine();
-    triggerToast("Tugas berhasil dikalkulasi & diprioritaskan!");
+    nameInput.value = "";
+    dateInput.value = "";
+    durationInput.value = "";
+    appEngineRender();
+    triggerToast("Tugas mandiri berhasil dimasukkan ke AI Assistant!");
 }
 
-// Jalankan Engine saat Load Awal
-renderPriorityEngine();
+function toggleTaskStatus(id) {
+    tasks = tasks.map(t => {
+        if(t.id === id) t.status = t.status === 'done' ? 'pending' : 'done';
+        return t;
+    });
+    appEngineRender();
+}
+
+function deleteTask(id) {
+    tasks = tasks.filter(t => t.id !== id);
+    appEngineRender();
+    triggerToast("Tugas berhasil dihapus.", "fa-trash-can");
+}
+
+function saveSettings() {
+    const nameValue = document.getElementById('input-nama').value;
+    if(nameValue.trim() !== "") {
+        document.getElementById('dash-username').innerText = nameValue;
+        triggerToast("Profil Anda berhasil diperbarui!");
+    }
+}
+
+appEngineRender();
 </script>
 </body>
 </html>
